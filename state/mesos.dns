@@ -1,0 +1,5 @@
+#!/bin/bash
+
+http mm1:8123/v1/version | jq .Version
+http mm3:8123/v1/version | jq .Version
+http mm3:8123/v1/version | jq .Version

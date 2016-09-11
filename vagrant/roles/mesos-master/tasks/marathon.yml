@@ -1,0 +1,49 @@
+---
+
+- name: install mesos rpm
+  yum: name=marathon state=latest
+
+- name: systemctl reload
+  sudo: yes
+  shell: systemctl daemon-reload
+  tags: marathon
+
+- name: marathon:enable service
+  sudo: yes
+  service: name=marathon enabled=yes state=started
+  tags:
+    - check
+    - marathon
+
+- name: copy nginx configs
+  sudo: yes
+  template:
+    src: "nginx/marathon.conf.j2"
+    dest: "{{nginx_config_dir}}/marathon.conf"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stc.stat.exists and with_nginx
+  tags: marathon
+
+- name: copy nginx configs:upstream
+  sudo: yes
+  template:
+    src: "nginx/marathon.upstream.j2"
+    dest: "{{nginx_upstream_config_dir}}/marathon.upstream"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stu.stat.exists and with_nginx
+  tags: marathon
+
+- name: copy nginx configs:location
+  sudo: yes
+  template:
+    src: "nginx/marathon.location.j2"
+    dest: "{{nginx_location_config_dir}}/marathon.location"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stl.stat.exists and with_nginx
+  tags: marathon

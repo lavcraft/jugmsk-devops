@@ -1,0 +1,58 @@
+---
+- name: Install cdh repository
+  shell: rpm -Uvh http://archive.cloudera.com/cdh5/one-click-install/redhat/7/x86_64/cloudera-cdh-5-0.x86_64.rpm
+
+- name: install zookeeper rpm
+  yum: name=zookeeper-server state=latest
+
+- name: install java
+  yum: name=java state=latest
+- name: copy files to config dir
+  sudo: yes
+  copy:
+    src: "{{ item }}"
+    dest: "{{zookeeper_config_dir}}"
+  with_fileglob:
+    - zookeeper/*
+    - hosts
+  tags: zookeeper
+
+- name: copy zookeeper myid config
+  sudo: yes
+  template:
+    src: zookeeper/myid.j2
+    dest: "{{zookeeper_config_dir}}/myid"
+    backup: yes
+    mode: 0644
+  tags: zookeeper
+
+- name: copy zookeeper zoo.cfg config
+  sudo: yes
+  template:
+    src: zookeeper/zoo.cfg.j2
+    dest: "{{zookeeper_config_dir}}/zoo.cfg"
+    backup: yes
+    mode: 0644
+  tags: zookeeper
+
+- name: copy zookeeper myid config
+  sudo: yes
+  template:
+    src: zookeeper/environment
+    dest: "{{zookeeper_config_dir}}/environment"
+    backup: yes
+    mode: 0644
+  tags: zookeeper
+
+- name: init zookeper
+  shell: sudo -u zookeeper zookeeper-server-initialize --myid={{zk_id}}
+
+- name: reload service
+  sudo: yes
+  shell: systemctl daemon-reload
+  tags: zookeeper-server
+
+- name: enable service
+  sudo: yes
+  service: name=zookeeper-server enabled=yes state=started
+  tags: zookeeper

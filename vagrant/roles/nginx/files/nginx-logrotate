@@ -1,0 +1,14 @@
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 10
+        size=100M
+        compress
+        delaycompress
+        notifempty
+        create 644 root root
+        sharedscripts
+        postrotate
+                /usr/bin/docker kill --signal="USR1" nginx
+        endscript
+}

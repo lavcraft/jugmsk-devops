@@ -1,0 +1,18 @@
+[Unit]
+Description=Chronos container
+Requires=mesos-master.service
+After=mesos-master.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm chronos
+ExecStart=/usr/bin/docker run --rm \
+ -e CHRONOS_HTTP_PORT=4400 \
+ -e CHRONOS_MASTER={{mesos.zk}} \
+ -e CHRONOS_ZK_HOSTS={{mesos.zk_hosts}} \
+ \
+ --net host --name chronos {{docker.chronos}}
+ExecStop=/usr/bin/docker stop -t 10 chronos
+
+[Install]
+WantedBy=multi-user.target

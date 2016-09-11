@@ -1,0 +1,39 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE")
+    classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+  }
+}
+
+plugins {
+  id 'maven-publish'
+//  id 'com.jfrog.artifactory' version '4.1.1'
+  id 'nebula.optional-base' version '3.0.3'
+  id 'nebula.provided-base' version '3.0.3'
+  id 'nebula.source-jar' version '4.4.4'
+  id 'nebula.info' version '3.0.4'
+  //id 'nebula.nebula-release' version '4.0.1'
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile 'org.springframework.boot:spring-boot-starter:1.4.0.RELEASE'
+  compile 'org.springframework.boot:spring-boot-starter-web:1.4.0.RELEASE'
+  compile 'com.containersolutions.mesos:spring-boot-starter-mesos:0.2.1'
+
+  provided 'org.projectlombok:lombok:1.16.8'
+}
+
+springBoot {
+  executable = true
+}

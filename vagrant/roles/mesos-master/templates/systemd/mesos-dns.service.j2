@@ -1,0 +1,11 @@
+[Unit]
+Description=Mesos dns service
+Requires=docker.service mesos-master.service
+After=docker.service mesos-master.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/mesos-dns -v=2 -config=/etc/mesos-dns/config.json
+
+[Install]
+WantedBy=multi-user.target

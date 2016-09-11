@@ -1,0 +1,9 @@
+---
+# defaults file for zookeeper
+#
+zookeeper_config_dir: /etc/zookeeper/conf
+zookeeper_log_dir: /var/log/zookeeper
+zookeeper_host_data_dir: /var/lib/zookeeper
+zookeeper_group_hosts: zk
+
+java_memory: 512m

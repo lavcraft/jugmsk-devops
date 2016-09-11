@@ -1,0 +1,39 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+!gradle-wrapper.jar
+
+*.iml
+
+## Directory-based project format:
+.idea/
+/classes
+*.ipr
+*.iws
+/out/
+.idea_modules/
+atlassian-ide-plugin.xml
+
+.DS_Store
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+generated-src
+
+*.log

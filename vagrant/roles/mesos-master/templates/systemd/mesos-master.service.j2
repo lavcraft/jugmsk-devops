@@ -1,0 +1,22 @@
+[Unit]
+Description=Mesos master container
+Requires=docker.service
+After=docker.service zookeeper.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm mesos-master
+ExecStart=/usr/bin/docker run --rm \
+ -e MESOS_HOSTNAME={{ ansible_hostname }} \
+ -e MESOS_IP={{mesos.external_ip}} \
+ -e MESOS_QUORUM={{mesos.quorum}} \
+ -e MESOS_ZK={{mesos.zk}} \
+ \
+ -e MESOS_LOG_DIR=/var/log/mesos -v /var/log/mesos:/var/log/mesos \
+ -e MESOS_WORK_DIR=/var/lib/mesos -v {{mesos_work_dir}}:/var/lib/mesos \
+ \
+ --name mesos-master --net host {{docker.master}}
+ExecStop=/usr/bin/docker stop -t 10 mesos-master
+
+[Install]
+WantedBy=multi-user.target

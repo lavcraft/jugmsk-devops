@@ -1,0 +1,19 @@
+[Unit]
+Description=Zookeeper container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm zookeeper
+ExecStart=/usr/bin/docker run --rm \
+  -v {{zookeeper_log_dir}}:/var/log/zookeeper \
+  -v {{zookeeper_host_data_dir}}:/var/lib/zookeeper \
+  -v /etc/hosts:/etc/hosts \
+  -v {{ zookeeper_config_dir }}:/etc/zookeeper/conf \
+  --name zookeeper \
+  --net host {{docker.zk}}
+ExecStop=/usr/bin/docker stop -t 10 zookeeper
+
+[Install]
+WantedBy=multi-user.target

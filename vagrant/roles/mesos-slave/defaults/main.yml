@@ -1,0 +1,21 @@
+# defaults file for mesos-slave
+---
+
+flush_all: false
+
+mesos_slave_config_dir: /etc/mesos-slave
+mesos_config_dir: /etc/mesos
+mesos_slave_workdir: /data/mesos
+
+mesos_zk: zk://zk_node1:2181,zk_node2:2181,zk_node3:2181/mesos
+mesos_port_range: 5900-20000
+mesos_gc_delay: 7days
+mesos_version: 0.28.2
+
+mesos_slave_attributes:
+  rack_id:
+    description: 'Datacenter or rack'
+    val: "{{rack_id | default('default')}}"
+  type:
+    description: 'type of slave. Application/data/mq/compute etc'
+    val: 'application'

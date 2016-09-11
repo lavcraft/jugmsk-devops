@@ -1,0 +1,19 @@
+---
+# tasks file for nginx-oem
+
+- include: check.yml
+- include: logrotate.yml
+  when: not flush_all
+  tags: nginx
+
+- include: config.yml
+  when: not flush_all
+  tags: nginx
+
+- include: service.yml
+  when: not flush_all
+  tags: nginx
+
+- include: delete.yml
+  when: flush_all
+  tags: nginx

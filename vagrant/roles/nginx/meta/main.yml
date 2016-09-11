@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  author: Tolkachev Kirill
+  description: Install docker nginx image as systemd service and tune rsyslogd
+  company: Alfa Laboratory
+  min_ansible_version: 1.2
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+    - name: Fedora
+    versions:
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+
+  categories:
+    - web
+    - http
+    - balancing
+
+dependencies: []
+  

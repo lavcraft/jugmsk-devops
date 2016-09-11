@@ -1,0 +1,19 @@
+---
+
+- name: copy nginx service config
+  sudo: yes
+  template:
+    src: nginx.service
+    dest: /etc/systemd/system/nginx.service
+  tags: nginx_service_install
+
+- name: reload service
+  sudo: yes
+  shell: systemctl daemon-reload
+  tags: systemctl
+
+- name: enable service
+  sudo: yes
+  service: name=nginx enabled=yes state=started
+  tags:
+    - check

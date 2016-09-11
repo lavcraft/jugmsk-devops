@@ -1,0 +1,20 @@
+---
+# defaults file for nginx-oem
+
+flush_all: false
+
+nginx_user: nginx
+nginx_port: 80
+nginx_with_password: true
+
+nginx_docker_image_name: nginx:1.9.6
+nginx_config_dir: /etc/nginx
+nginx_advanced_config_dir: /etc/nginx/conf.d
+nginx_sites_config_dir: /etc/nginx/sites-enabled
+nginx_location_config_dir: /etc/nginx/location.d
+nginx_upstream_config_dir: /etc/nginx/upstream.d
+nginx_log_dir: /var/log/nginx
+nginx_www_dir: /var/www
+nginx_auth_pass: dev:\$apr1\$8XvQNFc6\$xsWGcaMRDvxNlWV7WI/I10
+
+nginx_app_sock_host_dir: /var/run/app_sock/

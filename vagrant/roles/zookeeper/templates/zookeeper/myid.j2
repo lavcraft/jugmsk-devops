@@ -1,0 +1,11 @@
+{% if zookeeper_hosts is defined and zookeeper_hosts|length >= 3 %}
+{% for host in zookeeper_hosts|sort %}
+{% if host['zk_hostname']==ansible_hostname %}{{host['zk_id']}}{% endif %}
+{% endfor %}
+{% elif groups[zookeeper_group_hosts] is defined and groups[zookeeper_group_hosts] >=3  %}
+{% for host in groups[zookeeper_group_hosts]|sort   %}
+{% if hostvars[host]['inventory_hostname']==ansible_hostname %}{{hostvars[host]['zk_id']}}{% endif %}
+{% endfor %}
+{% else %}
+0
+{% endif %}

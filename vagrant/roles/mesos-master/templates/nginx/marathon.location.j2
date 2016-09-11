@@ -1,0 +1,4 @@
+location /marathon/ {
+    access_log  /var/log/nginx/marathon.access.log;
+    proxy_pass http://backend_marathon/;
+}

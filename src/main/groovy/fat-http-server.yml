@@ -1,0 +1,25 @@
+id: dummy-http-server
+cpus: 0.2
+mem: 32
+instances: 2
+container:
+  type: DOCKER
+  docker:
+    image: lavcraft/nc:latest
+    network: BRIDGE
+    portMappings:
+     - containerPort: 8080
+       hostPort: 0
+       protocol: tcp
+ports:
+  - 0
+constraints:
+  -
+    - hostname
+    - UNIQUE
+healthChecks:
+  - protocol: HTTP
+    path: /
+    portIndex: 0
+cmd: bash -c "nc -kl -c \"echo -e 'HTTP/1.1 200 OK\r\nCache-Control:no-cache\r\nConnection:close\r\nContent-Type:text/html\r\n\n\nHello Jug Msk `date +%T`'\" -p 8080"
+

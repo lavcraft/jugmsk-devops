@@ -1,0 +1,62 @@
+---
+- name: install mesos rpm
+  yum: name=mesos state=latest
+
+- name: copy nginx configs
+  sudo: yes
+  template:
+    src: "nginx/mesos.conf.j2"
+    dest: "{{nginx_config_dir}}/mesos.conf"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stc.stat.exists and with_nginx
+  tags: mesos_master
+
+- name: copy nginx configs:upstream
+  sudo: yes
+  template:
+    src: "nginx/mesos.upstream.j2"
+    dest: "{{nginx_upstream_config_dir}}/mesos.upstream"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stu.stat.exists and with_nginx
+  tags: mesos_master
+
+- name: copy nginx configs:location
+  sudo: yes
+  template:
+    src: "nginx/mesos.location.j2"
+    dest: "{{nginx_location_config_dir}}/mesos.location"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stl.stat.exists and with_nginx
+  tags: mesos_master
+
+- name: delete mesos quorum default file
+  file: path=/etc/mesos-master/quorum state=absent
+
+- name: add valid quorum
+  lineinfile: dest=/etc/mesos-master/quorum state=present create=yes line='{{mesos.quorum}}' owner=root group=root mode=0644
+
+- name: delete mesos zk default file
+  file: path=/etc/mesos/zk state=absent
+
+- name: add valid zk endpoints
+  lineinfile: dest=/etc/mesos/zk create=yes line='{{mesos.zk}}' owner=root group=root mode=0644
+
+# - name: delete mesos hostname default file
+#   file: path=/etc/mesos-master/hostname state=absent
+
+# - name: add valid hostname endpoints
+#   lineinfile: dest=/etc/mesos-master/hostname create=yes line='{{ansible_default_ipv4['address']}}' owner=root group=root mode=0644
+
+- name: enable service
+  sudo: yes
+  service: name=mesos-master enabled=yes state=started
+
+- name: disable slave service
+  sudo: yes
+  service: name=mesos-slave enabled=no state=stopped

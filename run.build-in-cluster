@@ -1,0 +1,4 @@
+#!/bin/bash
+
+LIBPROCESS_IP=192.168.40.1
+http $LIBPROCESS_IP:8080/tasks repoUrl==https://github.com/lavcraft/example-gradle.git

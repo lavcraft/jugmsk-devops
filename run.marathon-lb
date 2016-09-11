@@ -1,0 +1,15 @@
+#!/bin/bash
+
+docker run --privileged=true \
+    -e PORTS=9090 \
+    -p 9090:9090 \
+    mesosphere/marathon-lb sse \
+    -m http://192.168.40.131:8080 \
+    --health-check \
+    --group "*"
+
+# http://localhost:9090/_haproxy_getvhostmap
+# http://localhost:9090/haproxy?stats
+# http://localhost:9090/_haproxy_getconfig
+# http://localhost:9090/_haproxy_health_check
+# https://github.com/mesosphere/marathon-lb/blob/master/Longhelp.md#other-labels

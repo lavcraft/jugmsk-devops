@@ -1,0 +1,11 @@
+- src: git+ssh://git@git/dops/ansible-zookeeper.git
+  version: master
+  name: zookeeper
+
+- src: git+ssh://git@git/dops/ansible-nginx-oem.git
+  version: master
+  name: nginx
+
+- src: git+ssh://git@git/dops/ansible-mesos-slave.git
+  version: attributes
+  name: mesos-slave

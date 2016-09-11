@@ -1,0 +1,73 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    # - name: create service.d directory for docker
+    #   file:
+    #     path=/etc/systemd/system/docker.service.d
+    #     recurse=yes
+    #     state=directory
+
+    # - name: modify docker config
+    #   tags: docker config
+    #   template: src=init/override.conf.j2 dest=/etc/systemd/system/docker.service.d/override.conf
+
+    # - name: reload systemd daemon
+    #   shell: systemctl daemon-reload
+
+
+    - lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1(\s+)\D\D\d.*$' state=absent
+
+    - name: enable and start docker service
+      service: name=docker enabled=yes state=started
+
+    - name: restart docker service
+      service: name=docker enabled=yes state=restarted
+
+- hosts: zk
+  sudo: yes
+  vars:
+    zookeeper_group_hosts: zk
+  roles:
+    - role: zookeeper
+
+- hosts: mesos-master
+  sudo: yes
+  vars:
+    nginx_docker_image_name: nginx:1.11.3-alpine
+  roles:
+    - role: nginx
+
+- hosts: mesos-master
+  sudo: yes
+  vars:
+    zk_endpoints: "zk1:2181,zk2:2181,zk3:2181"
+    mesos:
+      quorum: 2
+      external_ip: "{{ mesos_ip | d(ipv4_host) | d(ansible_default_ipv4.address) }}"
+      marathon:
+        zk: "zk://{{ zk_endpoints }}/marathon"
+      zk: "zk://{{ zk_endpoints }}/mesos"
+      zk_hosts: "{{ zk_endpoints }}"
+  roles:
+    - mesos-master
+
+- hosts: mesos-slave
+  sudo: yes
+  vars:
+    mesos_zk: "zk://zk1:2181,zk2:2181,zk3:2181/mesos"
+    mesos_version: 1.0.1
+    mesos_gc_delay: 3days
+  roles:
+    - mesos-slave
+
+- hosts: zk
+  tasks:
+    - name: Check zookeeper avaialability
+      wait_for: port=2181 delay=20
+
+- hosts: mesos-master
+  tasks:
+    - name: Check zookeeper avaialability
+      wait_for: port=80 delay=20

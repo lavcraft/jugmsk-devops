@@ -1,0 +1,26 @@
+[Unit]
+Description=Nginx container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm nginx
+ExecStart=/usr/bin/docker run --rm \
+ -v {{nginx_app_sock_host_dir}}:/var/run/app_sock/ \
+ -v {{nginx_sites_config_dir}}:{{nginx_sites_config_dir}} \
+ -v {{nginx_upstream_config_dir}}:{{nginx_upstream_config_dir}} \
+ -v {{nginx_location_config_dir}}:{{nginx_location_config_dir}} \
+ -v {{nginx_config_dir}}/httppasswd:/etc/nginx/httppasswd:ro \
+ -v {{nginx_config_dir}}/nginx.conf:/etc/nginx/nginx.conf:ro \
+ -v {{nginx_www_dir}}:{{nginx_www_dir}}:ro \
+ -v {{nginx_config_dir}}/conf.d:/etc/nginx/conf.d:ro \
+ -v {{ nginx_log_dir }}:{{ nginx_log_dir }} \
+ \
+ --net host \
+ --name nginx {{nginx_docker_image_name}}
+ExecStop=/usr/bin/docker stop -t 10 nginx
+ExecReload=/usr/bin/docker kill -s HUP nginx
+
+[Install]
+WantedBy=multi-user.target

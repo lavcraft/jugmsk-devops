@@ -1,0 +1,4 @@
+location /chronos/ {
+    access_log  /var/log/nginx/chronos.access.log;
+    proxy_pass http://backend_chronos/;
+}

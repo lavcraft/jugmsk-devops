@@ -1,0 +1,16 @@
+### Java template
+*.class
+*.jar
+hs_err_pid*
+
+### JetBrains template
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Gradle template
+.gradle
+build/
+gradle-app.setting
+!gradle-wrapper.jar

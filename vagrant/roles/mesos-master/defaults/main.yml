@@ -1,0 +1,18 @@
+---
+# defaults file for mesos-cluster
+
+flush_all: false
+
+mesos:
+  external_ip: 127.0.0.1
+  quorum: 2
+
+with_nginx: true
+nginx_config_dir: /etc/nginx/conf.d/
+nginx_location_config_dir: /etc/nginx/location.d
+nginx_upstream_config_dir: /etc/nginx/upstream.d
+nginx_log_dir: /var/log/nginx
+
+# mesos.marathon.subscriber_type: http_callback
+# mesos.marathon.http_hooks: http://localhost:8000
+mesos_work_dir: /data/mesos

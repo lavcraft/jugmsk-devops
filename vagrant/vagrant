@@ -1,0 +1,14 @@
+[zk]
+zk1 zk_id=1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/zk1/virtualbox/private_key'
+zk2 zk_id=2 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/zk2/virtualbox/private_key'
+zk3 zk_id=3 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/zk3/virtualbox/private_key'
+
+
+[mesos-master]
+mm1 mesos_ip=192.168.40.131 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2202 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/mm1/virtualbox/private_key'
+mm2 mesos_ip=192.168.40.132 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2203 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/mm2/virtualbox/private_key'
+mm3 mesos_ip=192.168.40.133 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2204 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/mm3/virtualbox/private_key'
+
+[mesos-slave]
+ms1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2205 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/ms1/virtualbox/private_key'
+ms2 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2206 ansible_ssh_user='vagrant' ansible_ssh_private_key_file='./.vagrant/machines/ms2/virtualbox/private_key'

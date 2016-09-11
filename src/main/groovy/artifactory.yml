@@ -1,0 +1,27 @@
+id: artifactory
+cpus: 0.5
+mem: 512
+ports:
+  - 0
+instances: 1
+container:
+  type: DOCKER
+  docker:
+    image: docker.bintray.io/jfrog/artifactory-oss:latest
+    network: BRIDGE
+    portMappings:
+     - containerPort: 8081
+       hostPort: 0
+       protocol: tcp
+constraints:
+  -
+    - hostname
+    - UNIQUE
+healthChecks:
+  -
+    - protocol: HTTP
+      path: /
+      portIndex: 0
+labels:
+  HAPROXY_GROUP: external
+  HAPROXY_0_VHOST: art

@@ -1,0 +1,10 @@
+server {
+    listen       80;
+    server_name  {{ ansible_hostname }}.marathon;
+
+    access_log  /var/log/nginx/marathon.access.log;
+
+    location / {
+        proxy_pass http://backend_marathon;
+    }
+}

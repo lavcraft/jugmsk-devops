@@ -1,0 +1,23 @@
+id: mesos-dns-100
+cpus: 0.2
+mem: 128
+env:
+  LOCAL_IP: 192.168.99.101
+  MESOS_ZK: zk://172.17.0.3:2181/mesos
+  MESOS_DNS_EXTERNAL_SERVERS: 8.8.8.8,8.8.4.
+ports:
+  - 0
+instances: 1
+container:
+  type: DOCKER
+  docker:
+    image: tobilg/mesos-dns
+    network: HOST
+    portMappings:
+     - containerPort: 8080
+       hostPort: 0
+       protocol: tcp
+constraints:
+  -
+    - hostname
+    - UNIQUE

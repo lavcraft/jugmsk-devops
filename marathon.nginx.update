@@ -1,0 +1,2 @@
+#!/bin/bash
+echo `groovy src/main/groovy/yaml-to-json.groovy -f ./src/main/groovy/nginx.yml -c` | http PUT jug.local:8080/v2/apps/nginx

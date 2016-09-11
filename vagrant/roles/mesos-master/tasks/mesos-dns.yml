@@ -1,0 +1,32 @@
+---
+
+- name: install mesos dns binary
+  get_url: url=https://github.com/mesosphere/mesos-dns/releases/download/v0.5.2/mesos-dns-v0.5.2-linux-amd64 dest=/usr/bin/mesos-dns
+  tags: mesos-dns
+
+- name: set executable
+  shell: chmod +x /usr/bin/mesos-dns
+
+- name: copy nginx configs:upstream
+  template:
+    src: "nginx/mesos.upstream.j2"
+    dest: "{{nginx_upstream_config_dir}}/mesos.upstream"
+    backup: yes
+    mode: 0644
+
+- name: copy service config
+  template:
+    src: systemd/mesos-dns.service.j2
+    dest: /etc/systemd/system/mesos-dns.service
+
+- name: create mesos-slave tmp dir
+  file: path="/etc/mesos-dns" state=directory
+
+- name: copy mesos-dns config
+  template:
+    src: mesos-dns-config.json
+    dest: /etc/mesos-dns/config.json
+
+- name: enable service
+  sudo: yes
+  service: name=mesos-dns enabled=yes state=started

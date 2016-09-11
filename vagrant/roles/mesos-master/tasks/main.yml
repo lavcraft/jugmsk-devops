@@ -1,0 +1,44 @@
+---
+# tasks file for mesos-cluster
+
+- name: Install mesosphere repository
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+
+- stat: path={{nginx_config_dir}}
+  register: stc
+  tags:
+    - chronos
+    - marathon
+    - mesos_master
+
+- stat: path={{nginx_upstream_config_dir}}
+  register: stu
+  tags:
+    - chronos
+    - marathon
+    - mesos_master
+
+- stat: path={{nginx_location_config_dir}}
+  register: stl
+  tags:
+    - chronos
+    - marathon
+    - mesos_master
+
+- name: init mesos master node
+  become: true
+  become_user: root
+  include: mesos-master.yml
+
+- name: init mesos dns
+  become: true
+  become_user: root
+  include: mesos-dns.yml
+
+- name: init marathon node
+  become: true
+  become_user: root
+  include: marathon.yml
+
+# - name: init chronos node
+#   include: chronos.yml

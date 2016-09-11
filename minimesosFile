@@ -1,0 +1,102 @@
+minimesos {
+    clusterName = "Change Cluster Name in minimesosFile file"
+    loggingLevel = "INFO"
+    mapAgentSandboxVolume = false
+    mapPortsToHost = true
+    mesosVersion = "1.0.0"
+    timeout = 60
+
+    agent {
+        imageName = "containersol/mesos-agent"
+        imageTag = "1.0.0-0.1.0"
+        loggingLevel = "# INHERIT FROM CLUSTER"
+        portNumber = 5051
+
+        resources {
+
+            cpu {
+                role = "*"
+                value = 2
+            }
+
+            disk {
+                role = "*"
+                value = 2000
+            }
+
+            mem {
+                role = "*"
+                value = 1024
+            }
+
+            ports {
+                role = "*"
+                value = "[31000-32000]"
+            }
+        }
+    }
+
+    agent {
+        imageName = "containersol/mesos-agent"
+        imageTag = "1.0.0-0.1.0"
+        loggingLevel = "# INHERIT FROM CLUSTER"
+        portNumber = 5051
+
+        resources {
+
+            cpu {
+                role = "*"
+                value = 2
+            }
+
+            disk {
+                role = "*"
+                value = 2000
+            }
+
+            mem {
+                role = "*"
+                value = 1024
+            }
+
+            ports {
+                role = "*"
+                value = "[31000-32000]"
+            }
+        }
+    }
+
+
+    consul {
+        imageName = "containersol/consul-server"
+        imageTag = "0.6-1"
+    }
+
+    marathon {
+        imageName = "mesosphere/marathon"
+        imageTag = "v1.3.0-RC6"
+
+        // Add 'app { marathonJson = "<path or URL to JSON file>" }' for every task you want to execute
+        app {
+            marathonJson = "https://raw.githubusercontent.com/ContainerSolutions/minimesos/e2a43362f4581122762c80d8780d09b567783f1a/apps/weave-scope.json"
+        }
+    }
+
+    master {
+        aclJson = null
+        authenticate = false
+        imageName = "containersol/mesos-master"
+        imageTag = "1.0.0-0.1.0"
+        loggingLevel = "# INHERIT FROM CLUSTER"
+    }
+
+    registrator {
+        imageName = "gliderlabs/registrator"
+        imageTag = "v6"
+    }
+
+    zookeeper {
+        imageName = "jplock/zookeeper"
+        imageTag = "3.4.6"
+    }
+}

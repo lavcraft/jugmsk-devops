@@ -1,0 +1,8 @@
+location /mesos/ {
+    access_log  /var/log/nginx/mesos.access.log;
+    proxy_pass http://backend_mesos/;
+}
+location /static/ {
+    access_log  /var/log/nginx/static.access.log;
+    proxy_pass http://backend_mesos/static/;
+}

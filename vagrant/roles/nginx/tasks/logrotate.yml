@@ -1,0 +1,17 @@
+---
+
+- name: copy nginx files to config dir
+  sudo: yes
+  copy:
+    src: "nginx-logrotate"
+    dest: "/etc/logrotate.d/nginx-logrotate"
+  tags: nginx_update_logrotate
+
+- stat: path={{nginx_config_dir}}
+  register: stl
+
+- name: create nginx logs dir
+  sudo: yes
+  file: path={{nginx_config_dir}} state=directory mode=0744
+  when: not stl.stat.exists
+  tags: nginx_create_log_dir

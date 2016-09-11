@@ -1,0 +1,6 @@
+---
+# handlers file for zookeeper
+
+- name: reload systemd daemon
+  sudo: yes
+  shell: systemctl daemon-reload

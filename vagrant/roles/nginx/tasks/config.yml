@@ -1,0 +1,50 @@
+---
+
+- stat: path={{nginx_config_dir}}
+  register: stc
+
+- stat: path={{nginx_advanced_config_dir}}
+  register: std
+
+- stat: path={{nginx_sites_config_dir}}
+  register: sta
+
+- stat: path={{nginx_upstream_config_dir}}
+  register: stu
+
+- stat: path={{nginx_location_config_dir}}
+  register: stl
+
+- file: path={{nginx_config_dir}} state=directory mode=0755 recurse=yes
+  when: not stc.stat.exists
+
+- file: path={{nginx_sites_config_dir}} state=directory mode=0755 recurse=yes
+  when: not sta.stat.exists
+
+- file: path={{nginx_advanced_config_dir}} state=directory mode=0755 recurse=yes
+  when: not std.stat.exists
+
+- file: path={{nginx_location_config_dir}} state=directory mode=0755 recurse=yes
+  when: not stl.stat.exists
+
+- file: path={{nginx_upstream_config_dir}} state=directory mode=0755 recurse=yes
+  when: not stu.stat.exists
+
+- name: copy nginx config
+  sudo: yes
+  template:
+    src: "nginx.conf"
+    dest: "{{nginx_config_dir}}/nginx.conf"
+  tags: copy_nginx_config
+
+- name: pull latest docker image
+  sudo: yes
+  shell: "echo {{nginx_auth_pass}} > /etc/nginx/httppasswd"
+  when: nginx_with_password
+  tags: password
+
+- name: create nginx app-sock dir
+  sudo: yes
+  file: path={{nginx_app_sock_host_dir}} state=directory mode=0744
+  when: not status_app_sock_host_dir.stat.exists
+  tags: copy_nginx_config

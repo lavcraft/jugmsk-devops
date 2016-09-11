@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: build-scheduler
+mesos:
+ framework.name: ${spring.application.name}
+ master: zk://zk1:2181,zk2:2181,zk3:2181/mesos
+ zookeeper.server: zk1:2181,zk2:2181,zk3:2181
+ command: sleep 60
+ resources:
+  distinctSlave: false
+  scale: 100
+  cpus: 0.1
+  mem: 256
+ docker:
+  image: lavcraft/jdkgit
+server:
+  port: 8080
+  address: ${LIBPROCESS_IP}
+
+logging:
+  level:
+    com.containersolutions.mesos: DEBUG
+    com.containersolutions.mesos.scheduler.OfferStrategyFilter: DEBUG
+
+# 8-jre-alpine

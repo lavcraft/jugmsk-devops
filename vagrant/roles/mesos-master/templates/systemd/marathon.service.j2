@@ -1,0 +1,24 @@
+[Unit]
+Description=Marathon container
+Requires=docker.service mesos-master.service
+After=docker.service mesos-master.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm marathon
+ExecStart=/usr/bin/docker run --rm \
+ -e MARATHON_HOSTNAME={{ ansible_hostname }} \
+ -e MARATHON_HTTPS_ADDRESS={{mesos.external_ip}} \
+ -e MARATHON_HTTP_ADDRESS={{mesos.external_ip}} \
+ -e MARATHON_MASTER={{mesos.zk}} \
+ -e MARATHON_ZK={{mesos.marathon.zk}} \
+{% if mesos.marathon.event_subscriber is defined %}
+ -e marathon_event_subscriber={{mesos.marathon.event_subscriber}} \
+ -e marathon_http_endpoints={{mesos.marathon.http_hooks}} \
+{% endif %}
+ \
+ --name marathon --net host {{docker.marathon}} --task_launch_timeout=300000
+ExecStop=/usr/bin/docker stop -t 10 marathon
+
+[Install]
+WantedBy=multi-user.target

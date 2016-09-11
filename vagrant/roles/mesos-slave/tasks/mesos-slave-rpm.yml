@@ -1,0 +1,75 @@
+---
+- name: Install mesosphere repository
+  yum: name=http://repos.mesosphere.com/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm state=present
+
+- name: install mesos rpm
+  yum: name=mesos state=latest
+
+- name: create mesos-slave config dir
+  ignore_errors: true
+  file: path="{{mesos_slave_config_dir}}" state=directory
+
+- name: create mesos-slave tmp dir
+  ignore_errors: true
+  file: path="{{mesos_slave_workdir}}" state=directory
+
+- name: copy files to config dir
+  copy:
+    src: "{{ item }}"
+    dest: "{{mesos_slave_config_dir}}"
+  with_fileglob:
+    - mesos-slave/*
+
+- name: mesos-slave:copy hostname config
+  template:
+    src: mesos-slave/hostname.j2
+    dest: "{{mesos_slave_config_dir}}/hostname"
+    mode: 0644
+
+# - name: mesos-slave:copy ip config
+#   template:
+#     src: mesos-slave/ip.j2
+#     dest: "{{mesos_slave_config_dir}}/ip"
+#     mode: 0644
+
+- name: mesos-slave:copy resources config
+  template:
+    src: mesos-slave/resources.j2
+    dest: "{{mesos_slave_config_dir}}/resources"
+    mode: 0644
+
+- name: mesos-slave:copy resources config
+  template:
+    src: mesos-slave/gc_delay.j2
+    dest: "{{mesos_slave_config_dir}}/gc_delay"
+    mode: 0644
+
+- name: mesos-slave:copy master config
+  template:
+    src: mesos-slave/master.j2
+    dest: "{{mesos_config_dir}}/zk"
+    mode: 0644
+
+- name: mesos-slave:copy work_dir config
+  template:
+    src: mesos-slave/work_dir.j2
+    dest: "{{mesos_slave_config_dir}}/work_dir"
+    mode: 0644
+
+- name: create mesos-slave attributes files
+  file: path="{{mesos_slave_config_dir}}/attributes/{{item.key}}" state=absent
+  with_dict: "{{mesos_slave_attributes}}"
+
+- name: create mesos-slave attributes files
+  lineinfile:
+    dest="{{mesos_slave_config_dir}}/attributes/{{item.key}}"
+    line="{{item.value.val}}"
+    mode=0644
+    create=yes
+  with_dict: "{{mesos_slave_attributes}}"
+
+- name: mesos-slave:enable service
+  service: name=mesos-slave enabled=yes state=started
+
+- name: mesos-slave:disable mesos-master service
+  service: name=mesos-master enabled=no state=stopped

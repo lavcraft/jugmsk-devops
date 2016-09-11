@@ -1,0 +1,12 @@
+*.iml
+.idea/
+*.ipr
+*.iws
+# Created by .ignore support plugin (hsz.mobi)
+#
+shared_roles
+*.retry
+
+# Vagrant
+.vagrant
+

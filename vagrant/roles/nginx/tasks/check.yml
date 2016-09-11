@@ -1,0 +1,12 @@
+---
+
+#- name: pull latest docker image
+#  sudo: yes
+#  shell: docker pull {{nginx_docker_image_name}}
+#  tags:
+#    - nginx
+#    - pull
+
+- stat: path={{nginx_app_sock_host_dir}}
+  register: status_app_sock_host_dir
+  tags: nginx

@@ -1,0 +1,7 @@
+---
+# tasks file for mesos-slave
+
+- name: init mesos-slave node
+  become: true
+  become_user: root
+  include: mesos-slave-rpm.yml

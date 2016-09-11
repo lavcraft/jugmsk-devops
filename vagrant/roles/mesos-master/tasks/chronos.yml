@@ -1,0 +1,67 @@
+---
+
+- name: install mesos rpm
+  yum: name=chronos state=latest
+
+#- name: pull latest docker image
+#  sudo: yes
+#  shell: docker pull {{docker.chronos}}
+#  tags:
+#    - pull
+#    - chronos
+
+# - name: chronos:copy service config
+#   sudo: yes
+#   template:
+#     src: systemd/chronos.service.j2
+#     dest: /etc/systemd/system/chronos.service
+#     backup: yes
+#   notify: restart chronos
+#   tags: chronos
+
+- name: chronos:reload service
+  sudo: yes
+  shell: systemctl daemon-reload
+  tags:
+    - systemctl
+    - chronos
+
+- name: chronos:enable service
+  sudo: yes
+  service: name=chronos enabled=yes state=started
+  tags:
+    - systemctl
+    - chronos
+    - check
+
+- name: copy nginx configs
+  sudo: yes
+  template:
+    src: "nginx/chronos.conf.j2"
+    dest: "{{nginx_config_dir}}/chronos.conf"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stc.stat.exists and with_nginx
+  tags: chronos
+
+- name: chronos:copy nginx configs:upstream
+  sudo: yes
+  template:
+    src: "nginx/chronos.upstream.j2"
+    dest: "{{nginx_upstream_config_dir}}/chronos.upstream"
+    mode: 0644
+  notify: reload nginx
+  when: stu.stat.exists and with_nginx
+  tags: chronos
+
+- name: copy nginx configs:location
+  sudo: yes
+  template:
+    src: "nginx/chronos.location.j2"
+    dest: "{{nginx_location_config_dir}}/chronos.location"
+    backup: yes
+    mode: 0644
+  notify: reload nginx
+  when: stl.stat.exists and with_nginx
+  tags: chronos

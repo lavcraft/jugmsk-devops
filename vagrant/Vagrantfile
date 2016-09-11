@@ -1,0 +1,73 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |c|
+  c.ssh.forward_agent = true
+  c.hostmanager.enabled = true
+  c.hostmanager.manage_host = true
+  c.hostmanager.ignore_private_ip = false
+  c.hostmanager.include_offline = true
+
+  # give Virtualbox more mem for Java to build
+  c.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "512"]
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  end
+
+  zk_hosts= (1..3).map { |h| "zk#{h}" }
+  mesos_masters= (1..3).map { |h| "mm#{h}" }
+  mesos_slaves= (1..2).map { |h| "ms#{h}" }
+
+  # Configure zookeeper nodes
+  zk_hosts.each do |node_name|
+    i = node_name[-1].to_i
+    c.vm.define node_name do |node|
+      node.vm.box = "box-cutter/centos72-docker"
+      node.vm.hostname = node_name
+      node.vm.network :private_network, ip: "192.168.40.#{i+110}"
+    end
+  end
+
+  mesos_masters.each do |node_name|
+    i = node_name[-1].to_i
+    c.vm.define node_name do |node|
+      node.vm.box = "box-cutter/centos72-docker"
+      node.vm.hostname = node_name
+      node.vm.network :private_network, ip: "192.168.40.#{i+130}"
+    end
+  end
+
+  mesos_slaves.each do |node_name|
+    i = node_name[-1].to_i
+    c.vm.provider "virtualbox" do |v|
+      v.memory = 1536
+      v.cpus = 2
+    end
+    c.vm.define node_name do |node|
+      node.vm.box = "box-cutter/centos72-docker"
+      node.vm.hostname = node_name
+      node.vm.network :private_network, ip: "192.168.40.#{i+120}"
+    end
+  end
+
+  c.vm.provision :hostmanager
+
+  c.vm.provision "ansible" do |ansible|
+    ansible.playbook = "vagrant-playbook.yml"
+    ansible.host_key_checking = false
+    ansible.sudo = true
+    ansible.verbose = ENV['ANSIBLE_VERBOSE'] ||= "vvvv"
+    ansible.tags = ENV['ANSIBLE_TAGS'] ||= "all"
+    ansible.inventory_path = "./vagrant"
+    ansible.extra_vars = {
+        ansible_ssh_user: 'vagrant',
+        ansible_connection: 'ssh',
+        ansible_ssh_args: '-o ForwardAgent=yes'
+    }
+    ansible.raw_ssh_args = ['-o UserKnownHostsFile=/dev/null']
+    # ansible.groups = {
+    #     "zk" => zk_hosts,
+    #     "all:vars" => zk_hosts.inject({}) { |hsh, node| hsh["ZOOKEEPER_#{hsh.length}"]=node; hsh } # does not work?
+    # }
+  end
+end

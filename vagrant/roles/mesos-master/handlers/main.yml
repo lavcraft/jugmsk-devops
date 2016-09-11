@@ -1,0 +1,22 @@
+---
+# handlers file for mesos-cluster
+- name: restart marathon
+  sudo: yes
+  service: name=marathon state=restarted
+
+- name: reload marathon service
+  sudo: yes
+  shell: systemctl daemon-reload
+  notify: restart marathon
+
+- name: restart chronos
+  sudo: yes
+  service: name=chronos state=restarted
+
+- name: reload systemd daemon
+  sudo: yes
+  shell: systemctl daemon-reload
+
+- name: reload nginx
+  ignore_errors: yes
+  service: name=nginx state=reloaded

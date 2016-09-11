@@ -1,0 +1,28 @@
+---
+
+- name: systemctl reload
+  sudo: yes
+  shell: systemctl daemon-reload
+  tags: nginx
+
+- name: disable service
+  sudo: yes
+  service: name=nginx enabled=no state=stopped
+  tags: nginx
+
+- name: rmi nginx docker image
+  sudo: yes
+  ignore_errors: yes
+  shell: docker rmi -f {{nginx_docker_image_name}}
+  tags: nginx
+
+- sudo: yes
+  ignore_errors: yes
+  file: path="{{nginx_config_dir}}" state=absent
+  tags: nginx
+
+- name: remove mesos master service
+  sudo: yes
+  file: path=/etc/systemd/system/nginx.service state=absent
+  ignore_errors: yes
+  notify: reload systemd daemon

@@ -1,0 +1,6 @@
+.vagrant
+shared_roles
+*.pyc
+.filters/*.pyc
+.DS_Store
+*.retry
